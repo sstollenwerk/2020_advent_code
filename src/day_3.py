@@ -10,8 +10,7 @@ class CircList(list):
 
 def parse_row(row: str) -> CircList[bool]:
     row = row.strip()
-    print(set(row))
-    if set(row) <= {"#", "."}:
+    if not (set(row) <= {"#", "."}):
         raise ValueError
     return CircList([c == "#" for c in row])
 
