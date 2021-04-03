@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.9
 
 from functools import partial
+import math
 
 
 class CircList(list):
@@ -34,7 +35,8 @@ def find_hit(rows: list[CircList[bool]], right: int, down: int, index: int = 0) 
 def main():
     vals = get_data()
     hit = partial(find_hit, vals)
-    print(hit(3, 1))
+    angles = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
+    print(math.prod(hit(*ang) for ang in angles))
 
 
 if __name__ == "__main__":
