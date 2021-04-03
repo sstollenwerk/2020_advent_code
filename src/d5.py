@@ -1,18 +1,27 @@
 #!/usr/bin/env python3.9
-from typing import TypeVar
+from typing import TypeVar, Callable
+from collections import defaultdict
 
 T = TypeVar("T")
+V = TypeVar("V")
 
 Ticket = tuple[int, int]
 
 
-def get_data() -> list[int]:
+def groupby(vals: list[T], key: Callable[[T], V]) -> dict[V, list[T]]:
+    groups = defaultdict(list)
+    for v in vals:
+        groups[key(v)].append(v)
+    return dict(groups)
+
+
+def get_data() -> list[str]:
     with open("../data/d5.txt") as f:
         rows = f.readlines()
         return list(rows)
 
 
-def split_list(vals: list[T]) -> list[T]:
+def split_list(vals: list[T]) -> tuple[list[T], list[T]]:
     half = len(vals) // 2
     return vals[:half], vals[half:]
 
@@ -42,9 +51,22 @@ def seat_id(ticket: Ticket) -> int:
     return 8 * a + b
 
 
+def find_missing(tickets: list[Ticket]) -> Ticket:
+    groups_ = groupby(tickets, lambda x: x[0])
+    groups = {k: {i[1] for i in v} for k, v in groups_.items()}
+
+    expected = set(range(8))
+    for row, seats in groups.items():
+        for seat in (missing := expected - seats) :
+            if seat in groups[row - 1] and seat in groups[row + 1]:
+                return (row, seat)
+
+    raise ValueError
+
+
 def main():
-    vals = get_data()
-    print(max(map(seat_id, (map(find_pos, vals)))))
+    vals = map(find_pos, get_data())
+    print(seat_id(find_missing(list(vals))))
 
 
 if __name__ == "__main__":
