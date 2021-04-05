@@ -4,7 +4,8 @@ import common
 
 
 def num_answers(vals: list[str]) -> int:
-    return len(set().union(*map(set, vals)))
+    x, *xs = list(map(set, vals))
+    return len(x.intersection(*xs))
 
 
 def main():
