@@ -24,6 +24,9 @@ class TreeFunc:
         outs = {b for b, cont in tree.items() if bag in cont.keys()}
         return outs.union(*map(self.contain, outs))
 
+    def bag_count(self, bag: Bag) -> int:
+        return sum((amt * (self.bag_count(b) + 1) for b, amt in self.tree[bag].items()))
+
 
 def get_data() -> list[str]:
     with open("../data/d7.txt") as f:
@@ -61,9 +64,8 @@ def parse_all(vals: list[str]) -> Tree:
 def main():
     vals = get_data()
     tree = parse_all(vals)
-    res = TreeFunc(tree).contain("shiny gold")
-    # print(res)
-    print(len(res))
+    res = TreeFunc(tree).bag_count("shiny gold")
+    print(res)
 
 
 if __name__ == "__main__":
